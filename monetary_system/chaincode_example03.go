@@ -61,7 +61,7 @@ func main() {
 }
 
 // Init resets all the things
-func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
+func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	if len(args) != 2 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 2")
 	}
@@ -86,7 +86,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 }
 
 // Invoke isur entry point to invoke a chaincode function
-func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
+func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	if function == "createBank" {
 		return t.createBank(stub, args)
 	} else if function == "createCompany" {
@@ -104,7 +104,7 @@ func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args
 	return nil, errors.New("Received unknown function invocation")
 }
 
-func (t *SimpleChaincode) createBank(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
+func (t *SimpleChaincode) createBank(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	if len(args) != 1 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 1")
 	}
@@ -128,7 +128,7 @@ func (t *SimpleChaincode) createBank(stub *shim.ChaincodeStub, args []string) ([
 	return bankBytes, nil
 }
 
-func (t *SimpleChaincode) createCompany(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
+func (t *SimpleChaincode) createCompany(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	if len(args) != 1 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 1")
 	}
@@ -149,7 +149,7 @@ func (t *SimpleChaincode) createCompany(stub *shim.ChaincodeStub, args []string)
 	return cpBytes, nil
 }
 
-func (t *SimpleChaincode) issueCoin(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
+func (t *SimpleChaincode) issueCoin(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	if len(args) != 1 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 1")
 	}
@@ -188,7 +188,7 @@ func (t *SimpleChaincode) issueCoin(stub *shim.ChaincodeStub, args []string) ([]
 	return tsBytes, nil
 }
 
-func (t *SimpleChaincode) issueCoinToBank(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
+func (t *SimpleChaincode) issueCoinToBank(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	if len(args) != 2 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 2")
 	}
@@ -263,7 +263,7 @@ func (t *SimpleChaincode) issueCoinToBank(stub *shim.ChaincodeStub, args []strin
 	return tsBytes, nil
 }
 
-func (t *SimpleChaincode) issueCoinToCp(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
+func (t *SimpleChaincode) issueCoinToCp(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	if len(args) != 3 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 3")
 	}
@@ -341,7 +341,7 @@ func (t *SimpleChaincode) issueCoinToCp(stub *shim.ChaincodeStub, args []string)
 	return tsBytes, nil
 }
 
-func (t *SimpleChaincode) transfer(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
+func (t *SimpleChaincode) transfer(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	if len(args) != 3 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 3")
 	}
@@ -421,7 +421,7 @@ func (t *SimpleChaincode) transfer(stub *shim.ChaincodeStub, args []string) ([]b
 }
 
 // Query is our entry point for queries
-func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
+func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	fmt.Println("query is running " + function)
 
 	if function == "getCenterBank" {
@@ -510,7 +510,7 @@ func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args 
 	return nil,nil
 }
 
-func getCenterBank(stub *shim.ChaincodeStub) (CenterBank, []byte,error) {
+func getCenterBank(stub shim.ChaincodeStubInterface) (CenterBank, []byte,error) {
 	var centerBank CenterBank
 	cbBytes, err := stub.GetState("centerBank")
 	if err != nil {
@@ -523,7 +523,7 @@ func getCenterBank(stub *shim.ChaincodeStub) (CenterBank, []byte,error) {
 	return centerBank,cbBytes, nil
 }
 
-func getCompanyById(stub *shim.ChaincodeStub, id string) (Company,[]byte, error) {
+func getCompanyById(stub shim.ChaincodeStubInterface, id string) (Company,[]byte, error) {
 	var company Company
 	cpBytes,err := stub.GetState("company"+id)
 	if err != nil {
@@ -536,7 +536,7 @@ func getCompanyById(stub *shim.ChaincodeStub, id string) (Company,[]byte, error)
 	return company,cpBytes, nil
 }
 
-func getBankById(stub *shim.ChaincodeStub, id string) (Bank, []byte,error) {
+func getBankById(stub shim.ChaincodeStubInterface, id string) (Bank, []byte,error) {
 	var bank Bank
 	cbBytes,err := stub.GetState("bank"+id)
 	if err != nil {
@@ -549,7 +549,7 @@ func getBankById(stub *shim.ChaincodeStub, id string) (Bank, []byte,error) {
 	return bank,cbBytes, nil
 }
 
-func getTransactionById(stub *shim.ChaincodeStub, id string) (Transaction,[]byte, error) {
+func getTransactionById(stub shim.ChaincodeStubInterface, id string) (Transaction,[]byte, error) {
 	var transaction Transaction
 	tsBytes,err := stub.GetState("transaction"+id)
 	if err != nil {
@@ -562,7 +562,7 @@ func getTransactionById(stub *shim.ChaincodeStub, id string) (Transaction,[]byte
 	return transaction,tsBytes, nil
 }
 
-func getBanks(stub *shim.ChaincodeStub) ([]Bank, error) {
+func getBanks(stub shim.ChaincodeStubInterface) ([]Bank, error) {
 	var banks []Bank
 	var number string 
 	var err error
@@ -594,7 +594,7 @@ func getBanks(stub *shim.ChaincodeStub) ([]Bank, error) {
 	return nil,nil
 }
 
-func getCompanys(stub *shim.ChaincodeStub) ([]Company, error) {
+func getCompanys(stub shim.ChaincodeStubInterface) ([]Company, error) {
 	var companys []Company
 	var number string 
 	var err error
@@ -626,7 +626,7 @@ func getCompanys(stub *shim.ChaincodeStub) ([]Company, error) {
 	return nil,nil
 }
 
-func getTransactions(stub *shim.ChaincodeStub) ([]Transaction, error) {
+func getTransactions(stub shim.ChaincodeStubInterface) ([]Transaction, error) {
 	var transactions []Transaction
 	var number string 
 	var err error
@@ -658,7 +658,7 @@ func getTransactions(stub *shim.ChaincodeStub) ([]Transaction, error) {
 	return nil,nil
 }
 
-func writeCenterBank(stub *shim.ChaincodeStub,centerBank CenterBank) (error) {
+func writeCenterBank(stub shim.ChaincodeStubInterface,centerBank CenterBank) (error) {
 	cbBytes, err := json.Marshal(&centerBank)
 	if err != nil {
 		return err
@@ -670,7 +670,7 @@ func writeCenterBank(stub *shim.ChaincodeStub,centerBank CenterBank) (error) {
 	return nil
 }
 
-func writeBank(stub *shim.ChaincodeStub,bank Bank) (error) {
+func writeBank(stub shim.ChaincodeStubInterface,bank Bank) (error) {
 	var bankId string
 	bankBytes, err := json.Marshal(&bank)
 	if err != nil {
@@ -687,7 +687,7 @@ func writeBank(stub *shim.ChaincodeStub,bank Bank) (error) {
 	return nil
 }
 
-func writeCompany(stub *shim.ChaincodeStub,company Company) (error) {
+func writeCompany(stub shim.ChaincodeStubInterface,company Company) (error) {
 	var companyId string
 	cpBytes, err := json.Marshal(&company)
 	if err != nil {
@@ -704,7 +704,7 @@ func writeCompany(stub *shim.ChaincodeStub,company Company) (error) {
 	return nil
 }
 
-func writeTransaction(stub *shim.ChaincodeStub,transaction Transaction) (error) {
+func writeTransaction(stub shim.ChaincodeStubInterface,transaction Transaction) (error) {
 	var tsId string
 	tsBytes, err := json.Marshal(&transaction)
 	if err != nil {
